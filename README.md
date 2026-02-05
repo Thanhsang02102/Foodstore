@@ -211,5 +211,6 @@ Chạy lệnh:
 
 ## 7. Thông tin khác
 
-Liên hệ: trinhquanglam2k4@gmail.com
+Liên hệ: nguyenthanhsang02102@gmail.com
 # Foodstore
+# appFood
