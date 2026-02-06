@@ -175,9 +175,6 @@ Chạy lệnh:
   Thanh toán
 </p>
 
-![Demo 1](https://github.com/quanglam04/food-store/blob/master/src/main/webapp/resources/client/img/demo_1.png)
-
-<p align="center">
   Dashboard phía ADMIN
 </p>
 ---
