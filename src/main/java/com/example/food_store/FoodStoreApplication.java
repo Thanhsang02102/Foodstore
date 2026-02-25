@@ -41,24 +41,28 @@ public class FoodStoreApplication {
     CommandLineRunner initDatabaseUser(RoleRepository roleRepository, UserRepository userRepository,
             PasswordEncoder passwordEncoder) {
         return args -> {
-            if (userRepository.count() == 0) {
-                Role adminRole = roleRepository.findByName("ADMIN");
-                if (adminRole != null) {
-                    User adminUser = new User();
-                    adminUser.setEmail("nguyenthanhsang02102@gmail.com");
-                    adminUser.setPassword(passwordEncoder.encode("123456"));
-                    adminUser.setFullName("NguyenThanhSang");
-                    adminUser.setRole(adminRole);
-                    adminUser.setProvider("LOCAL");
-                    adminUser.setAddress("daklak");
-                    adminUser.setAvatar("");
-                    adminUser.setPhone("0336666666");
-
-                    userRepository.save(adminUser);
-
-                    System.out.println("Imported default admin user: " + adminUser.getEmail());
-                }
+            Role adminRole = roleRepository.findByName("ADMIN");
+            if (adminRole == null) {
+                return;
             }
+
+            String adminEmail = "nguyenthanhsang02102@gmail.com";
+            User adminUser = userRepository.findByEmail(adminEmail);
+            if (adminUser == null) {
+                adminUser = new User();
+                adminUser.setEmail(adminEmail);
+                adminUser.setFullName("NguyenThanhSang");
+                adminUser.setProvider("LOCAL");
+                adminUser.setAddress("daklak");
+                adminUser.setAvatar("");
+                adminUser.setPhone("0336666666");
+            }
+
+            adminUser.setRole(adminRole);
+            adminUser.setPassword(passwordEncoder.encode("123456"));
+            userRepository.save(adminUser);
+
+            System.out.println("Synced default admin user: " + adminEmail + " (password: 123456)");
         };
     }
 }
