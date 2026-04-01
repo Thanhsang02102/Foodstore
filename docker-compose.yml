@@ -19,7 +19,6 @@ services:
   rabbitmq:
     image: rabbitmq:4-management
     restart: always
-    container_name: rabbitmq
     ports:
       - "5672:5672" # AMQP port
       - "15672:15672" # Management UI port
@@ -55,8 +54,8 @@ services:
       - VNPAY_TMN_CODE=your-vnpay-tmn-code
       - VNPAY_HASH_SECRET=your-vnpay-hash-secret
       - VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-      - VNPAY_RETURN_URL=http://localhost:8080/payment-return
-      - API_GEMINI_URL=https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCJ6J4HXN2GqYU9R76Y291CpQXZ3Dg5Gg
+      - VNPAY_RETURN_URL=http://localhost:8080/afterOrder
+      - API_GEMINI_URL=
 
     depends_on:
       - db-mysql

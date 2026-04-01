@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +34,7 @@ public class ProductController extends BaseController {
     private final ProductService productService;
 
     @GetMapping("/admin/product")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getProduct(Model model, @RequestParam("page") Optional<String> pageOptional) {
         log.info("Request to /admin/product");
         int page = 1;
@@ -57,6 +59,7 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/admin/product/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getCreateProductPage(Model model) {
         log.info("Request to /admin/product/create");
         model.addAttribute("newPrd", new Product());
@@ -64,6 +67,7 @@ public class ProductController extends BaseController {
     }
     
     @GetMapping("/admin/product/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getDeleteProductPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/product/delete/{id}");
         model.addAttribute("id", id);
@@ -72,6 +76,7 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/admin/product/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getProductDetailPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/product/{id}");
         Product pr = this.productService.fetchProductById(id).get();
@@ -82,6 +87,7 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/admin/product/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getUpdateProductPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/product/update/{id}");
         Optional<Product> currentProduct = this.productService.fetchProductById(id);
@@ -90,6 +96,7 @@ public class ProductController extends BaseController {
     }
     
     @PostMapping("/admin/product/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String createProduct(@ModelAttribute("newPrd") @Valid Product prd, BindingResult newBindingResult, @RequestParam("productFile") MultipartFile file) {
         log.info("Request to /admin/product/create");
         if (newBindingResult.hasErrors()) {
@@ -104,6 +111,7 @@ public class ProductController extends BaseController {
 
 
     @PostMapping("/admin/product/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public String postDeleteProduct(Model model, @ModelAttribute("newProduct") Product prd) {
         log.info("Request to /admin/product/delete");
         this.productService.deleteProductById(prd.getId());
@@ -111,6 +119,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/admin/product/update")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String handleUpdateProduct(@ModelAttribute("newProduct") @Valid Product prd, BindingResult newProducBindingResult, @RequestParam("productFile") MultipartFile file) {
         log.info("Request to /admin/product/update");
         if (newProducBindingResult.hasErrors()) {

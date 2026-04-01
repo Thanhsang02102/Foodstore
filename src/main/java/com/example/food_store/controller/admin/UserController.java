@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +47,7 @@ public class UserController extends BaseController {
     private final EmailProducer emailProducer;
 
     @GetMapping("/admin/user")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getUserPage(Model model, @RequestParam("page") Optional<String> pageOptional) {
         log.info("Request to /admin/user");
         int page = 1;
@@ -71,6 +73,7 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/admin/user/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getCreateUserPage(Model model) {
         log.info("Request to /admin/user/create");
         model.addAttribute("newUser", new User());
@@ -78,6 +81,7 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/admin/user/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getUserDetailPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/user/{id}");
         User user = this.userService.getUserById(id);
@@ -88,6 +92,7 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/admin/user/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getUpdateUserPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/user/update/{id}");
         User currentUser = this.userService.getUserById(id);
@@ -97,6 +102,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping(value = "/admin/user/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String createUser(Model model, @ModelAttribute("newUser") @Valid User thanhsang,
             BindingResult newBindingResult, @RequestParam("avatarFile") MultipartFile file) {
         log.info("Request to /admin/user/create");
@@ -115,12 +121,13 @@ public class UserController extends BaseController {
         String hashPassword = this.passwordEncoder.encode(thanhsang.getPassword());
         thanhsang.setAvatar(avatar);
         thanhsang.setPassword(hashPassword);
-        thanhsang.setRole(this.userService.getRoleByName(thanhsang.getRole().getName()));
+        thanhsang.setRoles(this.userService.getRolesByNames(thanhsang.getSelectedRoleNames()));
         this.userService.handleSaveUser(thanhsang);
         return "redirect:/admin/user";
     }
 
     @GetMapping("/admin/user/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getDeleteUserPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/user/delete/{id}");
         model.addAttribute("id", id);
@@ -141,6 +148,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/admin/user/update")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String postUpdateUser(Model model, @ModelAttribute("newUser") User thanhsang) {
         log.info("Request to /admin/user/update");
         User currentUser = this.userService.getUserById(thanhsang.getId());
@@ -148,12 +156,16 @@ public class UserController extends BaseController {
             currentUser.setAddress(thanhsang.getAddress());
             currentUser.setFullName(thanhsang.getFullName());
             currentUser.setPhone(thanhsang.getPhone());
+            if (thanhsang.getSelectedRoleNames() != null) {
+                currentUser.setRoles(this.userService.getRolesByNames(thanhsang.getSelectedRoleNames()));
+            }
             this.userService.handleSaveUser(currentUser);
         }
         return "redirect:/admin/user";
     }
 
     @PostMapping("/admin/user/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public String postDeleteUser(Model model, @ModelAttribute("newUser") User thanhsang) {
         log.info("Request to /admin/user/delete");
         this.userService.deleteUserById(thanhsang.getId());

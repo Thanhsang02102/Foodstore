@@ -33,6 +33,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put("ROLE_USER", "/");
+        roleTargetUrlMap.put("ROLE_STAFF", "/admin");
         roleTargetUrlMap.put("ROLE_ADMIN", "/admin");
         for (final GrantedAuthority grantedAuthority : authorities) {
             String authorityName = grantedAuthority.getAuthority();
@@ -52,7 +53,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         String email = authentication.getName();
         User user = this.userService.getUserByEmail(email);
         if (user != null) {
-            session.setAttribute("role", user.getRole().getName());
+            session.setAttribute("role", user.getRoleNamesDisplay());
             session.setAttribute("fullName", user.getFullName());
             // Set default avatar if avatar is empty or null
             String avatar = user.getAvatar();

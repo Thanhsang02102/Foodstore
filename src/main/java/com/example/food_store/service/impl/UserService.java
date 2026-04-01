@@ -1,5 +1,10 @@
 package com.example.food_store.service.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,8 +13,8 @@ import com.example.food_store.domain.Role;
 import com.example.food_store.domain.User;
 import com.example.food_store.domain.dto.RegisterDTO;
 import com.example.food_store.repository.OrderRepository;
-import com.example.food_store.repository.RoleRepository;
-import com.example.food_store.repository.UserRepository;
+import com.example.food_store.repository.jdbc.JdbcRoleRepository;
+import com.example.food_store.repository.jdbc.JdbcUserRepository;
 import com.example.food_store.service.IUserService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final JdbcUserRepository userRepository;
+    private final JdbcRoleRepository roleRepository;
     private final OrderRepository orderRepository;
 
     @Override
@@ -49,6 +54,25 @@ public class UserService implements IUserService {
     @Override
     public Role getRoleByName(String name) {
         return this.roleRepository.findByName(name);
+    }
+
+    @Override
+    public List<Role> getRolesByNames(List<String> names) {
+        if (names == null || names.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Map<String, Role> rolesByName = new LinkedHashMap<>();
+        for (String name : names) {
+            if (name == null || name.isBlank()) {
+                continue;
+            }
+            Role role = this.roleRepository.findByName(name);
+            if (role != null) {
+                rolesByName.put(role.getName(), role);
+            }
+        }
+        return new ArrayList<>(rolesByName.values());
     }
 
     @Override

@@ -14,8 +14,10 @@ import org.springframework.context.annotation.Configuration;
 import com.example.food_store.constant.AppConstant;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 
 @Configuration
+@EnableRabbit
 public class RabbitMQConfig {
     @Bean
     Queue queue(){

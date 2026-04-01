@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ public class OrderController extends BaseController {
     private final OrderService orderService;
 
     @GetMapping("/admin/order")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getDashboard(Model model, @RequestParam("page") Optional<String> pageOptional) {
         log.info("Request to /admin/order");
         int page = 1;
@@ -53,6 +55,7 @@ public class OrderController extends BaseController {
     }
 
     @GetMapping("/admin/order/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getMethodName(@PathVariable long id, Model model) {
         log.info("Request to /admin/order/{id}");
         Order order = this.orderService.fetchOrderById(id).get();
@@ -64,6 +67,7 @@ public class OrderController extends BaseController {
     }
 
     @GetMapping("/admin/order/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getDeleteOrderPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/order/delete/{id}");
         model.addAttribute("id", id);
@@ -72,6 +76,7 @@ public class OrderController extends BaseController {
     }
 
     @GetMapping("/admin/order/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getUpdateOrderPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/order/update/{id}");
         Optional<Order> currentOrder = this.orderService.fetchOrderById(id);
@@ -80,6 +85,7 @@ public class OrderController extends BaseController {
     }
     
     @PostMapping("/admin/order/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public String postDeleteOrder(@ModelAttribute("newOrder") Order order) {
         log.info("Request to /admin/order/delete");
         this.orderService.deleteById(order.getId());
@@ -88,6 +94,7 @@ public class OrderController extends BaseController {
     }
 
     @PostMapping("/admin/order/update")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String handleUpdateOrder(@ModelAttribute("newOrder") Order order) {
         log.info("Request to /admin/order/update");
         this.orderService.updateOrder(order);

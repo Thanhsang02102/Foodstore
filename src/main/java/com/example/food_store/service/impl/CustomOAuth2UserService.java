@@ -1,7 +1,8 @@
 package com.example.food_store.service.impl;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -46,13 +47,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
                 oldUser.setFullName(fullName);
                 oldUser.setProvider(registrationeId.equalsIgnoreCase("github") ? OAuth2ProviderConstant.GITHUB : OAuth2ProviderConstant.GOOGLE);
                 oldUser.setPassword("trinhlam");
-                oldUser.setRole(userRole);
+                oldUser.setRoles(List.of(userRole));
                 this.userService.saveUser(oldUser);
             } else if (!user.getProvider().equalsIgnoreCase(registrationeId)) {
                 throw new CustomOAuth2Exception("Tài khoản đã tồn tại");
             }
         }
-        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_" + userRole.getName())),
+        return new DefaultOAuth2User(Set.of(new SimpleGrantedAuthority("ROLE_" + userRole.getName())),
                 oAuth2User.getAttributes(), "email");
 
     }

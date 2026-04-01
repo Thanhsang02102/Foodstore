@@ -1,5 +1,7 @@
 package com.example.food_store.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,6 +16,7 @@ public interface IUserService {
     long countOrder();
     boolean checkEmailExist(String email);
     Role getRoleByName(String name);
+    List<Role> getRolesByNames(List<String> names);
     User registerDTOtoUser(RegisterDTO registerDTO);
     User handleSaveUser(User user);
     User getUserById(long id);

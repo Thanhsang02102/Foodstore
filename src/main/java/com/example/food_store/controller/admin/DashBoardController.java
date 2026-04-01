@@ -3,6 +3,7 @@ package com.example.food_store.controller.admin;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.example.food_store.controller.BaseController;
 import com.example.food_store.service.impl.ProductService;
@@ -17,6 +18,7 @@ public class DashBoardController extends BaseController {
     private final ProductService productService;
 
     @GetMapping("/admin")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getDashBoard(Model model) {
         log.info("Request to /admin");
         model.addAttribute("countUser", this.userService.countUser());

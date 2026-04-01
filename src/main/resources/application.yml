@@ -9,8 +9,8 @@ spring:
 
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3308/foodstore?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
 
   servlet:
@@ -27,10 +27,10 @@ spring:
   #      table-name: SPRING_SESSION
 
   mail:
-    host: ${SPRING_MAIL_HOST}
-    port: ${SPRING_MAIL_PORT}
-    username: ${SPRING_MAIL_USERNAME}
-    password: ${SPRING_MAIL_PASSWORD}
+    host: ${SPRING_MAIL_HOST:}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
@@ -43,12 +43,12 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
+            client-id: ${GOOGLE_CLIENT_ID:dummy-google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:dummy-google-client-secret}
             scope: ${GOOGLE_SCOPE:email,profile}
           github:
-            client-id: ${GITHUB_CLIENT_ID}
-            client-secret: ${GITHUB_CLIENT_SECRET}
+            client-id: ${GITHUB_CLIENT_ID:dummy-github-client-id}
+            client-secret: ${GITHUB_CLIENT_SECRET:dummy-github-client-secret}
 
   web:
     resources:
@@ -60,14 +60,14 @@ spring:
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
 
-# server:
-#   port: ${SERVER_PORT:8080}
+server:
+  port: ${SERVER_PORT:8081}
 
 trinhlam:
   vnpay:
-    tmn-code: ${VNPAY_TMN_CODE}
-    hash-secret: ${VNPAY_HASH_SECRET}
-    vnp-url: ${VNPAY_URL}
-    vnp-return-url: ${VNPAY_RETURN_URL}
+    tmn-code: ${VNPAY_TMN_CODE:}
+    hash-secret: ${VNPAY_HASH_SECRET:}
+    vnp-url: ${VNPAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+    vnp-return-url: ${VNPAY_RETURN_URL:http://localhost:8081/afterOrder}
 
-api-gemini: ${API_GEMINI_URL}
+api-gemini: ${API_GEMINI_URL:}

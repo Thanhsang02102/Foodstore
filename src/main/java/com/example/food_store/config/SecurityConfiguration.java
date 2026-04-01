@@ -92,7 +92,7 @@ public class SecurityConfiguration {
                                                                 "reset-password/**", "/process-reset-password/**",
                                                                 "/verify/**", "/test-Gemini")
                                                 .permitAll()
-                                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "STAFF")
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2.loginPage("/login")
                                                 .successHandler(customSuccessHandler(userService))

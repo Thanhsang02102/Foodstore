@@ -148,7 +148,7 @@ public class HomePageController extends BaseController {
         User user = this.userService.registerDTOtoUser(userDTO);
         String hashPassword = this.passwordEncoder.encode(userDTO.getPassword());
         user.setPassword(hashPassword);
-        user.setRole(this.userService.getRoleByName("USER"));
+        user.setRoles(this.userService.getRolesByNames(List.of("USER")));
         this.userService.handleSaveUser(user);
         return "client/homepage/registerSuccess";
     }
